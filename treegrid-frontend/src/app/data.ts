@@ -27,6 +27,17 @@ export let customData = {
     }
   ],
   "settings": {
+    "task_id": {
+        "alias": "TaskID",
+        "data_type": "",
+        "font_size": "",
+        "font_color": "",
+        "background_color": "",
+        "alignment": "",
+        "textwrap": "",
+        "min_col_width": "", // newly added,
+        "width": "90" // newly added
+    },
     "field1": {
       "alias": "Name",
       "data_type": "",

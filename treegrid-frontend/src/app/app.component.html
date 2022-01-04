@@ -1,11 +1,82 @@
-<ejs-treegrid #treegrid [dataSource]='data'  [columns]="treegridColumns" childMapping='child' [treeColumnIndex]='1' height='400' [contextMenuItems]='contextMenuItems' (contextMenuClick)="contextMenuOpen($event)" >
-<!--
-  <e-columns>
-      <e-column field='TaskID' headerText='Player Jersey' width='120'></e-column>
-      <e-column field='FIELD1' headerText='Player Name' width='120'></e-column>
-      <e-column field='FIELD2' headerText='Year' width='100'></e-column>
-      <e-column field='FIELD3' headerText='Stint' width='120'></e-column>
-      <e-column field='FIELD4' headerText='TMID' width='120'></e-column>
-  </e-columns> -->
-</ejs-treegrid>
+<ejs-treegrid #treegrid [dataSource]='data'  [columns]="treegridColumns" childMapping='child' [treeColumnIndex]='1' [contextMenuItems]='contextMenuItems' (contextMenuClick)="contextMenuClick($event)" >
+  <!--
+    <e-columns>
+        <e-column field='TaskID' headerText='Player Jersey' width='120'></e-column>
+        <e-column field='FIELD1' headerText='Player Name' width='120'></e-column>
+        <e-column field='FIELD2' headerText='Year' width='100'></e-column>
+        <e-column field='FIELD3' headerText='Stint' width='120'></e-column>
+        <e-column field='FIELD4' headerText='TMID' width='120'></e-column>
+    </e-columns> -->
+  </ejs-treegrid>
 
+  <!-- Insert Dialogue -->
+  <ejs-dialog id='dialog' [visible]='visible' #template showCloseIcon='true' [header]='columnContextMenuHeader' (open)="dialogOpen()" [height]='height' [target]='targetElement' width='435px'>
+    <ng-template #footerTemplate>
+          <button id="sendButton" class="e-control e-btn e-primary sendButton" data-ripple="true">Save</button>
+      </ng-template>
+      <ng-template #content>
+        <table>
+          <tr>
+            <td>Column Name</td>
+            <td>
+              <ejs-textbox name="name" #cname='ngModel' [(ngModel)]='column_name'></ejs-textbox>
+              <div *ngIf="cname.invalid && (cname.dirty || cname.touched)" class="alert alert-danger">
+                <div *ngIf="cname.errors.required">
+                    Name is required.
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Data Type</td>
+            <td>
+              <ejs-dropdownlist name="skillname" #book='ngModel' [(ngModel)]='col_data_type'
+              [dataSource]='data_types' floatLabelType='Auto'>
+              </ejs-dropdownlist>
+            </td>
+          </tr>
+          <tr>
+            <td>Minimum column width</td>
+            <td>
+              <ejs-textbox name="min_width" [(ngModel)]='min_col_width'></ejs-textbox>
+            </td>
+          </tr>
+          <tr>
+            <td>Font size</td>
+            <td>
+              <ejs-textbox name="font_size" [(ngModel)]='col_font_size'></ejs-textbox>
+            </td>
+          </tr>
+          <tr>
+            <td>Font color</td>
+            <td>
+              <ejs-textbox name="font_color" [(ngModel)]='col_font_color'></ejs-textbox>
+            </td>
+          </tr>
+          <tr>
+            <td>Background color</td>
+            <td>
+              <ejs-textbox name="background_color" [(ngModel)]='col_background_color'></ejs-textbox>
+            </td>
+          </tr>
+          <tr>
+            <td>Alignment</td>
+            <td>
+              <ejs-dropdownlist name="alignment" #book='ngModel' [(ngModel)]='col_alignments'
+              [dataSource]='alignments' floatLabelType='Auto'>
+              </ejs-dropdownlist>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Text wrap</td>
+            <td>
+              <ejs-checkbox label="Left Side Label" name="text_wrap" [(ngModel)]='col_text_wrap' labelPosition="Before"></ejs-checkbox>
+            </td>
+          </tr>
+        </table>
+    </ng-template>
+      <ng-template #header>
+          <div title="Nancy" class="e-icon-settings dlg-template"> Nancy </div>
+      </ng-template>
+  </ejs-dialog>
