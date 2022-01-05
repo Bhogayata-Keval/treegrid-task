@@ -4,23 +4,10 @@ var express = require('express')
 var app = express()
 
 const bodyParser = require('body-parser');
-const { json } = require('body-parser');
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json());
-
-let firstName = faker.name.firstName();
-let lastName = faker.name.lastName();
-let jobTitle = faker.name.jobTitle();
-
-console.log("firstname", firstName)
-console.log("lastName", lastName)
-console.log("jobTitle", jobTitle)
-
-
-
-
 
 
 app.get('/generate-fakedata', function (req, res) {
@@ -63,15 +50,9 @@ app.get('/generate-fakedata', function (req, res) {
 })
 
 app.get('/read', function (req, res) {
-    fs.readFile("./data.json", "utf8", (err, jsonString) => {
-        if (err) {
-          console.log("File read failed:", err);
-          res.send({})
-        }
-        dummydata = JSON.parse(jsonString)
-        res.send(dummydata)
-    });
-    
+    fetchData(function send(data) {
+        res.send(data)
+    })
 })
 
 app.post('/column', function (req, res) {
@@ -123,18 +104,26 @@ app.put('/column', function (req, res) {
         //updating data in case of new default value
         if (req.body.default_value != jsondata.settings[req.body.index].default_value) {
             for (i=0; i<jsondata.data.length; i++) {
-                jsondata.data[i][req.body.index] = req.body.default_value;
+                if (jsondata.data[i][req.body.index] === "") {
+                    jsondata.data[i][req.body.index] = req.body.default_value;
+                }   
             }
         }
         
         data = JSON.parse(JSON.stringify(req.body))
+
+        // removing index key from request body
         delete data["index"]
         jsondata.settings[req.body.index] = data
     
 
         fs.writeFile("data.json", JSON.stringify(jsondata), 'utf8', function (err) {
             if (err) {
-                res.send("")
+                res.send({
+                    success: false,
+                    data: "Could not save to .json file",
+                    error: ""
+                })
             }
             res.send({
                 success: true,
@@ -194,13 +183,19 @@ app.listen(3000, function () {
 })
 
 
-function fetchData() {
+function fetchData(callback) {
     fs.readFile("./data.json", "utf8", (err, jsonString) => {
         if (err) {
           console.log("File read failed:", err);
-          res.send({})
+          res.send({
+              success: false,
+              error: "failed to read file"
+          })
         }
-        dummydata = JSON.parse(jsonString)
-        return dummydata
+        jsondata = JSON.parse(jsonString)
+        
+        if (typeof callback === "function") {
+            callback(jsondata)
+        }
     });
 }
