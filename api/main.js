@@ -154,27 +154,38 @@ app.delete('/column', function (req, res) {
 
         // column entry in settings
         let jsondata = JSON.parse(jsonString)
-        delete jsondata.settings[req.body.index]
 
-        // updating data        
-        for (i=0; i<jsondata.data.length; i++) {
-            delete jsondata.data[i][req.body.index]
-        }
-
-        // updating global index
-        // jsondata.globals.lastColumnIndex = jsondata.globals.lastColumnIndex + 1;
-
-        fs.writeFile("data.json", JSON.stringify(jsondata), 'utf8', function (err) {
-            if (err) {
-                res.send("")
+        if (jsondata.settings[req.body.index]) {
+            delete jsondata.settings[req.body.index]
+ 
+            for (i=0; i<jsondata.data.length; i++) {
+                delete jsondata.data[i][req.body.index]
             }
 
+            // updating global index
+            // jsondata.globals.lastColumnIndex = jsondata.globals.lastColumnIndex + 1;
+
+            fs.writeFile("data.json", JSON.stringify(jsondata), 'utf8', function (err) {
+                if (err) {
+                    res.send("")
+                }
+
+                res.send({
+                    success: true,
+                    data: "Column deleted successfully",
+                    error: ""
+                })
+            });
+        } else {
             res.send({
-                success: true,
-                data: "Column deleted successfully",
+                success: false,
+                data: "Column with this index does not exist",
                 error: ""
             })
-        });
+        }
+        
+
+       
     });
 })
 
